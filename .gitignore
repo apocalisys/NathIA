@@ -1,0 +1,6 @@
+# Archivos temporales de compilación
+*.img
+*.img.xz
+output/
+cache/
+*.tmp
