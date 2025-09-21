@@ -1,6 +1,5 @@
-# Archivos temporales de compilación
-*.img
-*.img.xz
-output/
-cache/
-*.tmp
+build/output/
+build/build-complete/
+*.log
+*.txt
+backup_*/
