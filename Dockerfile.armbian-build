@@ -1,0 +1,21 @@
+FROM ubuntu:22.04
+
+# Instalar dependencias de build Armbian
+RUN apt update && apt install -y \
+    git build-essential bc device-tree-compiler \
+    gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \
+    u-boot-tools libssl-dev python3 flex bison \
+    curl wget sudo locales
+
+# Configurar locale
+RUN locale-gen en_US.UTF-8
+ENV LANG=en_US.UTF-8
+
+# Crear usuario build
+RUN useradd -m -s /bin/bash builder && \
+    echo "builder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+USER builder
+WORKDIR /build
+
+CMD ["/bin/bash"]

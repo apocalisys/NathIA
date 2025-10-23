@@ -1,0 +1,22 @@
+/dts-v1/;
+
+/ {
+	compatible = "allwinner,h616arm,sun50iw9p1", "allwinner,sun50i-h616";
+	
+	memory@40000000 {
+		device_type = "memory";
+		reg = <0x40000000 0x40000000>;
+	};
+
+	soc {
+		ethernet@5020000 {
+			compatible = "allwinner,sunxi-gmac";
+			reg = <0x05020000 0x10000>;
+		};
+
+		gpu@1800000 {
+			compatible = "arm,mali-midgard";
+			reg = <0x01800000 0x10000>;
+		};
+	};
+};

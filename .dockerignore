@@ -1,0 +1,11 @@
+build/cache/
+build/output/
+.git/
+kernels/
+u-boot-*/
+linux-*/
+*.tar.*
+*.gz
+*.xz
+*.img
+*.dtb
