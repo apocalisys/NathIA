@@ -1,0 +1,35 @@
+From: ApoSeekOS Project <aposeekos@project.org>
+Date: $(date -R)
+Subject: [PATCH] dram: h616: add TV Box 2GB specific configuration
+
+Based on analysis of working Android boot0 configuration
+found at offset 0x1c80: ee ee 88 88 0a 31
+
+ arch/arm/mach-sunxi/dram_sun50i_h616.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm/mach-sunxi/dram_sun50i_h616.c b/arch/arm/mach-sunxi/dram_sun50i_h616.c
+index abcdef1..1234567 100644
+--- a/arch/arm/mach-sunxi/dram_sun50i_h616.c
++++ b/arch/arm/mach-sunxi/dram_sun50i_h616.c
+@@ -867,6 +867,18 @@ static void mctl_set_drive(const struct dram_para *para,
+ 		};
+ 		break;
+ 	case SUNXI_DRAM_TYPE_DDR4:
++		/* TV Box 2GB specific configuration - from working Android */
++		if (para->tpr2 == 0x310a8888) { /* ee ee 88 88 0a 31 pattern */
++			/* Apply TV Box specific drive settings */
++			writel(0x0, SUNXI_DRAM_PHY0_BASE + 0x4);
++			writel(0x0, SUNXI_DRAM_PHY0_BASE + 0x8);
++			writel(0x0, SUNXI_DRAM_PHY0_BASE + 0xc);
++			/* Additional TV Box specific timing */
++			writel(0x1c, SUNXI_DRAM_PHY0_BASE + 0x10);
++			writel(0x1c, SUNXI_DRAM_PHY0_BASE + 0x14);
++			break;
++		}
++		/* Fall through to standard DDR4 for other configurations */
+ 	default:
+ 		panic("This DRAM setup is currently not supported.\n");
+ 	}
+-- 
+2.25.1

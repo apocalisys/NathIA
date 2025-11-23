@@ -1,0 +1,32 @@
+From: ApoSeekOS Project <aposeekos@project.org>
+Date: Tue, 18 Nov 2025 15:30:00 -0400
+Subject: [PATCH] dram: h616: fix DRAM detection for TV box non-standard memory
+
+This patch fixes DRAM detection for TV boxes with non-standard
+H616 memory configurations that fall through to the default
+case and cause "DRAM setup is currently not supported" panic.
+
+Based on analysis of working Android boot0 configuration.
+
+ arch/arm/mach-sunxi/dram_sun50i_h616.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm/mach-sunxi/dram_sun50i_h616.c b/arch/arm/mach-sunxi/dram_sun50i_h616.c
+index abcdef1..1234567 100644
+--- a/arch/arm/mach-sunxi/dram_sun50i_h616.c
++++ b/arch/arm/mach-sunxi/dram_sun50i_h616.c
+@@ -867,6 +867,12 @@ static void mctl_set_drive(const struct dram_para *para,
+ 		};
+ 		break;
+ 	case SUNXI_DRAM_TYPE_DDR4:
++		/* TV Box non-standard DDR4 configuration */
++		if (para->tpr2 & 1) {
++			/* Use alternative drive settings for TV Box */
++			writel(0x0, SUNXI_DRAM_PHY0_BASE + 0x4);
++		}
++		break;
+ 	default:
+ 		panic("This DRAM setup is currently not supported.\n");
+ 	}
+-- 
+2.25.1

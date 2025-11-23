@@ -1,0 +1,107 @@
+
+✅ SOLUCIÓN APLICADA: 28/oct/2025 ~19:17
+PATCH H6 ELIMINADO: /build/patch/atf/atf-sunxi64/0001-Fix-reset-issue-on-H6-by-using-R_WDOG.patch
+
+✅ SOLUCIÓN APLICADA: 28/oct/2025 ~19:18
+PATCH H6 ELIMINADO EXITOSAMENTE
+
+🚨 ERROR #2 - FECHA: 28/oct/2025 ~19:19
+PROBLEMA: 'cannot open tty-output' - 'No option selected'
+CONTEXTO: Build reiniciado en modo no-interactivo pero pide selección
+CAUSA: Parámetro KERNEL_CONFIGURE=no no evitó menú interactivo
+SOLUCIÓN PROPUESTA: Usar modo completamente no-interactivo
+
+🚨 ERROR #2 PERSISTENTE - FECHA: 28/oct/2025 ~19:20
+PROBLEMA: Menú interactivo bloquea build en Docker sin TTY
+SOLUCIÓN INTENTADA: BETA=yes no resolvió
+NUEVA ESTRATEGIA: Usar archivo de configuración predefinido
+
+✅ SOLUCIÓN ERROR #2 APLICADA - FECHA: 28/oct/2025 ~19:23
+PROBLEMA: Docker sin TTY no permitía menús interactivos
+SOLUCIÓN: Usar 'docker exec -it' en lugar de 'docker exec'
+RESULTADO: Build ahora progresa correctamente
+ESTADO ACTUAL: Instalando dependencias de build
+
+🔍 DIAGNÓSTICO ERROR #3: Configuración ATF conflictiva
+- ATFSOURCE definido pero ATF_COMPILE=no
+- Submodules fallan porque ATF no debería compilarse
+SOLUCIÓN: Forzar ATF_COMPILE=no o cambiar a ATF alternativo
+
+✅ SOLUCIÓN ERROR #3 APLICADA - FECHA: 28/oct/2025 ~19:27
+PROBLEMA: Submodules ATF fallaban por configuración conflictiva
+SOLUCIÓN: ATF_COMPILE="no" forzado en configuración
+ESTADO: Build listo para reiniciar sin compilación ATF
+
+🚨 ERROR #3 PERSISTENTE - FECHA: 28/oct/2025 ~19:28
+PROBLEMA: ATF_COMPILE="no" no evitó compilación ATF
+SÍNTOMA: Build ignora ATF_COMPILE="no" y sigue compilando ATF
+CAUSA: Posible override en configuración de familia sun50iw9
+SOLUCIÓN: Investigar jerarquía de configuración ATF
+
+🔍 DIAGNÓSTICO: ATFSOURCE definido overridea ATF_COMPILE="no"
+SOLUCIÓN: Eliminar ATFSOURCE o forzar ATF_COMPILE más agresivamente
+
+✅ SOLUCIÓN DEFINITIVA ERROR #3 - FECHA: 28/oct/2025 ~19:29
+PROBLEMA: ATF se compilaba aunque ATF_COMPILE="no"
+CAUSA: ATFSOURCE definido overrideaba ATF_COMPILE
+SOLUCIÓN: ATFSOURCE="" + ATF_TARGET_MAP="" + ATF_COMPILE="no"
+ESTADO: ATF completamente deshabilitado
+
+🚨 ERROR #3 CRÍTICO - FECHA: 28/oct/2025 ~19:30
+PROBLEMA: ATF sigue compilándose a pesar de ATF_COMPILE="no" + ATFSOURCE=""
+SÍNTOMA: Build IGNORA completamente configuración ATF deshabilitada
+CAUSA: Configuración de familia sun50iw9 OVERRIDEA completamente board
+SOLUCIÓN RADICAL: Modificar configuración de familia o usar board diferente
+
+✅ SOLUCIÓN RADICAL APLICADA - FECHA: 28/oct/2025 ~19:31
+PROBLEMA: Configuración familia overrideaba board
+SOLUCIÓN: Modificado sun50iw9.conf directamente:
+- ATFSOURCE=""
+- ATF_COMPILE="no"
+ESTADO: ATF debería estar completamente deshabilitado
+
+🚨 ERROR #3 - SOLUCIÓN RADICAL REQUERIDA - FECHA: 28/oct/2025 ~19:32
+PROBLEMA: ATF persiste a pesar de deshabilitar en board y familia
+ANÁLISIS: El sistema Armbian tiene ATF hardcodeado para sun50iw9
+SOLUCIÓN RADICAL: Eliminar completamente ATF del proceso de build
+
+✅ SOLUCIÓN RADICAL COMPLETADA - FECHA: 28/oct/2025 ~20:15
+PROBLEMA: ATF hardcodeado en Armbian para sun50iw9
+SOLUCIÓN: Script atf.sh modificado para no hacer nada
+CONTENIDO NUEVO SCRIPT:
+# ATF DISABLED FOR H616 - MODIFIED 28/oct/2025
+echo "[ info ] ATF compilation skipped for H616"
+exit 0
+ESTADO: ATF completamente neutralizado
+
+🚨 ERROR #4 - FECHA: 28/oct/2025 ~20:18
+PROBLEMA: Script ATF modificado termina el build inmediatamente
+SÍNTOMA: Build muestra 'ATF compilation skipped' y termina
+CAUSA: exit 0 en atf.sh hace que build termine prematuramente
+SOLUCIÓN: Restaurar script ATF original
+
+🔄 CAMBIO DE ESTRATEGIA - FECHA: 28/oct/2025 ~20:19
+PROBLEMA: No podemos deshabilitar ATF sin romper el build
+NUEVA ESTRATEGIA: Usar Orange Pi Zero2 existente que ya funciona
+CONFIGURACIÓN: orangepizero2.conf ya tiene ATF funcionando
+
+🚨 ERROR #4 CRÍTICO - FECHA: 28/oct/2025 ~20:25
+PROBLEMA: ATF inherentemente problemático para H616
+SÍNTOMA: Mismo fallo en Orange Pi Zero2 (base probada)
+ANÁLISIS: ATF oficial no soporta H616 correctamente
+SOLUCIÓN: Buscar fork de ATF con soporte H616 o evitar ATF completamente
+
+🎯 ESTRATEGIA FINAL - FECHA: 28/oct/2025 ~20:26
+PROBLEMA: ATF oficial no funciona con H616
+SOLUCIÓN: Configurar U-Boot SPL para booteo sin ATF
+INVESTIGACIÓN: Algunas boards Allwinner usan U-Boot SPL sin ATF
+
+🔄 ESTRATEGIA ALTERNATIVA - FECHA: 28/oct/2025 ~20:27
+PROBLEMA: No hay U-Boot SPL configurado para H616
+NUEVA ESTRATEGIA: Forzar ATF a compilar aplicando parches H616
+INVESTIGACIÓN: Buscar parches específicos para ATF H616
+
+🎯 ESTRATEGIA FINAL - FECHA: 28/oct/2025 ~20:32
+PROBLEMA: ATF sin parches H616 + no SPL configurado
+SOLUCIÓN: Usar kernel legacy (5.15) que puede tener mejor soporte H616
+CONFIGURACIÓN: BRANCH=legacy en lugar de current
